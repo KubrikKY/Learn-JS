@@ -174,3 +174,140 @@ function byField(fieldName) {
         return a[fieldName] > b[fieldName] ? 1 : -1;
     };
 }
+
+// ------Планирование: setTimeout и setInterval-------
+
+// Напишите функцию printNumbers(from, to), которая выводит число каждую секунду, начиная от from и заканчивая to.
+
+// Сделайте два варианта решения.
+
+// Используя setInterval.
+// Используя рекурсивный setTimeout.
+
+// ---------------1------------------
+
+function printNumbers(from, to) {
+    let current = from;
+    
+    let timer = setInterval(()=>{
+        console.log(current);
+        if (current == to) {
+            clearInterval(timer);
+        }
+        current++;
+    }, 1000);
+}
+
+printNumbers(1, 8);
+
+// ---------------2------------------
+
+
+function printNumbers(from, to) {
+    let current = from;
+    let timer = setTimeout(function plus () {
+        console.log(current);
+        current++;
+        if (current <= to) {
+            setTimeout(plus, 1000);
+        }
+    }, 1000);
+}
+
+printNumbers(1, 8);
+
+
+
+// ------Декораторы и переадресация вызова, call/apply-------
+
+
+// Создайте декоратор spy(func), который должен возвращать обёртку, которая сохраняет все вызовы функции в своём свойстве calls.
+
+// Каждый вызов должен сохраняться как массив аргументов.
+
+function work(a, b) {
+    console.log( a + b ); // произвольная функция или метод
+  }
+  
+  work = spy(work);
+  
+  work(1, 2); // 3
+  work(4, 5); // 9
+  
+  console.log(work.calls);
+  for (let args of work.calls) {
+    console.log( 'call:' + args.join() ); // "call:1,2", "call:4,5"
+  }
+
+function spy(func) {
+    function wrapper () {
+        wrapper.calls.push(Array.from(arguments));
+        return func.apply(this, arguments);
+    };
+    wrapper.calls = [];
+
+    return wrapper;
+}
+
+// Создайте декоратор delay(f, ms), который задерживает каждый вызов f на ms миллисекунд.
+
+function delay(f, ms) {
+    return function wrapper () {
+        setTimeout(() => f.apply(this, arguments), ms);
+    }
+}
+
+function f(x) {
+    console.log(x);
+  }
+  
+  // создаём обёртки
+  let f1000 = delay(f, 1000);
+  let f1500 = delay(f, 1500);
+  
+  f1000("test"); // показывает "test" после 1000 мс
+  f1500("test");
+
+//   Результатом декоратора debounce(f, ms) должна быть обёртка, которая передаёт вызов f не более одного раза в ms миллисекунд. 
+//   Другими словами, когда мы вызываем debounce, это гарантирует, что все остальные вызовы будут игнорироваться в течение ms.
+
+function debounce(f, ms) {
+    let calldown = false;
+    return function () {
+        if (calldown) return;
+        f.apply(this, arguments);
+        calldown = true;
+        setTimeout(() => calldown = false, ms);
+    }
+}
+
+// Создайте «тормозящий» декоратор throttle(f, ms), который возвращает обёртку, передавая вызов в f не более одного раза в ms миллисекунд. 
+// Те вызовы, которые попадают в период «торможения», игнорируются.
+
+function throttle(f, ms) {
+    let calldown = false,
+        argumentsSaved,
+        thisSaved;
+    return function () {
+        if (calldown) {
+            argumentsSaved = arguments;
+            thisSaved = this;
+            return;
+        };
+        f.apply(this, arguments);
+        calldown = true;
+        setTimeout(() => calldown = false, ms);
+    }
+}
+
+function f(a) {
+    console.log(a)
+  }
+  
+  // f1000 передаёт вызовы f максимум раз в 1000 мс
+  let f1000 = throttle(f, 1000);
+  
+  f1000(1); // показывает 1
+  f1000(2); // (ограничение, 1000 мс ещё нет)
+  f1000(3); // (ограничение, 1000 мс ещё нет)
+
