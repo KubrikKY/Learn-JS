@@ -296,7 +296,11 @@ function throttle(f, ms) {
         };
         f.apply(this, arguments);
         calldown = true;
-        setTimeout(() => calldown = false, ms);
+        setTimeout(() => {
+            calldown = false;
+            if (argumentsSaved && thisSaved) f.apply(thisSaved, argumentsSaved);
+            argumentsSaved = thisSaved = null;
+        }, ms);
     }
 }
 
@@ -310,4 +314,49 @@ function f(a) {
   f1000(1); // показывает 1
   f1000(2); // (ограничение, 1000 мс ещё нет)
   f1000(3); // (ограничение, 1000 мс ещё нет)
+
+
+// ------Привязка контекста к функции-------
+
+let bound = func.bind(context, [arg1], [arg2], ...);
+
+let user = {
+    name: 'Kirill'
+};
+let userIvan = {
+    firstName: 'Ivan',
+    sendMessage (time, from, text) {
+        return {
+            time,
+            from,
+            to: this.firstName,
+            text,
+        };
+    }
+};
+
+function partial (f, ...args) {
+    return function(...argsMethod) {
+        return f.call(this, ...args, ...argsMethod);
+    }
+}
+
+userIvan.newMassage = partial(userIvan.sendMessage, `${new Date().getHours()} : ${new Date().getMinutes()}`);
+
+console.log(userIvan.newMassage(user.name, 'Hello'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
