@@ -101,10 +101,10 @@ let head = {
 
 function ObjCreate (name) {
     this.name = name;
-    ObjCreate.prototype.constructor = ObjCreate;
 }
 
 ObjCreate.prototype = {
+    // constructor: ObjCreate,
     age: 13,
 };
 
