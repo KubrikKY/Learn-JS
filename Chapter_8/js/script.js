@@ -198,3 +198,170 @@ class Menu {
 }
 
 Object.assign(Menu.prototype, eventMixin);
+
+
+
+// --------------Обработка ошибок, "try..catch"---------------------
+
+
+function func () {
+  func();
+}
+
+try {
+  try {
+    func();
+    
+  } catch (err) {
+    if (err.message.includes('is not defined')) {
+      console.log(`Переменная ${err.message.slice(0, err.message.indexOf(' '))} не определена`);
+    } else {
+      throw err;
+    }
+  }
+  finally {
+    console.log('ФИНАЛ');
+  }
+} catch (e) {
+  console.log(e.name);
+}
+
+// --------------Пользовательские ошибки, расширение Error---------------------
+
+
+class ValidationError extends Error{
+  constructor (message) {
+    super(message);
+    this.name = this.constructor.name;
+    this.message = 'Ошибка валидации: ' + message;
+  }
+}
+
+class NotDataValidation extends ValidationError{
+  constructor (data) {
+    super(data);
+    this.message = 'Отсутствует поле: ' + data;
+  }
+}
+
+function checkJSON (json) {
+  let message = JSON.parse(json);
+
+  if (!message.age) {
+    throw new NotDataValidation('age');
+  }
+
+  if (!message.name) {
+    throw new NotDataValidation('name');
+  }
+
+  if (message.age < 18) {
+    throw new ValidationError('вам меньше 18!');
+  }
+
+  return message;
+}
+
+let someJson = `{ "name": 25 }`;
+
+try {
+  checkJSON(someJson);
+} catch(err) {
+  if (err instanceof ValidationError) {
+    console.log(err.message);
+    console.log(err.name);
+  } else if (err instanceof SyntaxError) {
+    console.log('Ошибка синтаксиса: ' + err.message);
+  } else {
+    throw err;
+  }
+}
+
+
+class ReadError extends Error {
+  constructor (message, err) {
+    super(message);
+    this.message = message;
+    this.cause = err;
+    this.name = this.constructor.name;
+  }
+}
+
+class ValidationError extends Error {
+  constructor (message) {
+    super(message);
+    this.name = this.constructor.name;
+    this.message = 'Ошибка валидации ' + message;
+  }
+}
+
+class NotDataValidation extends ValidationError {
+  constructor (message) {
+    super(message);
+    this.message =  'Отсутствует поле ' + message;
+  }
+}
+
+function validationUser (user) {
+  if (!user.age) {
+    throw new NotDataValidation('age');
+  }
+
+  if (!user.name) {
+    throw new NotDataValidation('name');
+  }
+
+  if (user.age < 18) {
+    throw new ValidationError('вам меньше 18!');
+  }
+}
+
+function readUser (json) {
+  let user;
+
+  try {
+    user = JSON.parse(json);
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      throw new ReadError('Ошибка синтаксиса', err);
+    } else {
+      throw err;
+    }
+  }
+
+  try {
+    validationUser(user);
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      throw new ReadError('Ошибка валидации', err);
+    } else {
+      throw err;
+    }
+  }
+}
+
+let someJson = `{ "name: 25 }`;
+
+
+try {
+  readUser(someJson);
+} catch (err) {
+  if (err instanceof ReadError) {
+    console.log(err.cause);
+  } else {
+    throw err;
+  }
+}
+
+
+
+// Создайте класс FormatError, который наследует от встроенного класса SyntaxError.
+
+// Класс должен поддерживать свойства message, name и stack.
+
+class FormatError extends SyntaxError {
+  constructor (message) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
