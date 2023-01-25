@@ -285,3 +285,48 @@ class HttpError extends Error {
   
   demoGithubUser();
   
+
+  fetch('/article/promise-chaining/user.json')
+    .then(responce => responce.json())
+    .then(user => fetch(`https://api.github.com/users/${user.name}`))
+    .then(githubuser => new Promise ((resolve, reject) => {
+        let img = document.createElement('img');
+        img.src = githubuser.avatar_url;
+        img.className = 'promise-avatar-example';
+        document.body.append(img);
+
+        setTimeout(() => {
+            img.remove();
+            resolve(githubuser);
+        }, 6000);
+    }))
+    .then(githubUser => console.log("показ заверщен!!!"))
+    .catch(err => console.log(`ОШИБКА : ${err}`));
+
+    async function getUserAvatar (url) {
+
+        try {
+            let responce = await fetch(url);
+            let user = await responce.json();
+            let githubUser = await fetch(`https://api.github.com/users/${user.name}`);
+    
+            await new Promise ((resolve, reject) => {
+                let img = document.createElement('img');
+                img.src = githubUser.avatar_url;
+                img.className = 'promise-avatar-example';
+                document.body.append(img);
+        
+                setTimeout(() => {
+                    img.remove();
+                    resolve(githubuser);
+                }, 6000);
+            });
+        } catch (err) {
+            console.log(`ОШИБКА : ${err}`);
+        }
+       
+    }
+    let a = [1,2]
+
+    (function() { console.log(a) })()
+    console.log([] + 1 + 2);
