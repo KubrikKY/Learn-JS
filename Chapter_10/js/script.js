@@ -27,21 +27,6 @@ for (let i = 0; i < table.rows.length; i++) {
 
 // Какой в нём текст (без поддерева) ?
 // Какое число потомков – всех вложенных <li> (включая глубоко вложенные) ?
-
-let ul = document.querySelectorAll('ul');
-
-
-ul.forEach(i => {
-    i.insertAdjacentHTML('afterbegin', '<p>AFTERBEGIN</p>');
-});
-
-let div = document.createElement('div');
-  div.innerHTML = "<strong>Всем привет!</strong> Вы прочитали важное сообщение.";
-
-  ul.forEach(i => {
-    i.append(div);
-  setTimeout(() => div.remove(), 4000);
-});
   
 
 
@@ -134,21 +119,73 @@ let container = document.querySelector('#container');
 createTree(container, obj); // создаёт дерево в контейнере
 
 
+// Есть дерево, организованное в виде вложенных списков ul/li.
 
-// function createTreeTwo(container, data) {
-//     function f (data) {
-//         let li = '',
-//             ul;
-//         for (let key in data) {
-//             li += '<li>' + key + '</li>';
-//         }
+// Напишите код, который добавит каждому элементу списка <li> количество вложенных в него элементов. Узлы нижнего уровня, без детей – пропускайте.
 
-//         return ul || '';
-//     }
-//     container.innerHTML = f(data);
+let animal = document.querySelectorAll('.animal-list ul');
+
+for (let ul of animal) {
+  if (ul.children.length == 0) {
+    continue;
+  }
+  ul.previousSibling.data += `[${ul.children.length}]`;
+}
+
+// Напишите функцию createCalendar(elem, year, month).
+
+// Вызов функции должен создать календарь для заданного месяца month в году year и вставить его в elem.
+
+// Календарь должен быть таблицей, где неделя – это <tr>, а день – это <td>. У таблицы должен быть заголовок с названиями дней недели, каждый день – <th>, первым днём недели должен быть понедельник.
+
+function createCalendar(elem, year, month) {
+    let table = document.createElement('table'),
+    date = new Date(year, month - 1),
+    lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    table.innerHTML = '<table><tr><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr><tr>';
     
-// }
+    let currentDay = date;
+    for (let i = 0; i < getDay(currentDay); i++) {
+      let td = document.createElement('td');
+      td.innerHTML = ' ';
+      table.firstElementChild.lastElementChild.append(td);
+    };
 
+    for (let i = 1; i <= lastDay.getDate(); i++){
+      let td = document.createElement('td'),
+      tr = document.createElement('tr');
+      td.textContent = i;
+      table.firstElementChild.lastElementChild.append(td);
+      currentDay.setDate(i);
+      if (getDay(currentDay) == 6) {
+        table.firstElementChild.append(tr);
+      }
+    }
+    elem.append(table);
 
-// let container2 = document.querySelector('#container2');
-// createTreeTwo(container2, obj); // создаёт дерево в контейнере
+    function getDay(date) { // получить номер дня недели, от 0 (пн) до 6 (вс)
+      let day = date.getDay();
+      if (day == 0) day = 7; // сделать воскресенье (0) последним днем
+      return day - 1;
+    }
+}
+
+let cal = document.querySelector('.cal');
+
+createCalendar(cal, 2012, 8);
+
+// Напишите код для вставки <li>2</li><li>3</li> между этими двумя <li>:
+
+// <ul id="ul">
+//   <li id="one">1</li> 
+//   <li id="two">4</li>
+// </ul>
+
+let one = document.querySelector('#one').textContent;
+let two = document.querySelector('#two');
+
+while (one < two.textContent - 1) {
+  let li = document.createElement('li');
+  li.textContent = ++one;
+  two.before(li);
+}
