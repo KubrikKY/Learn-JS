@@ -4,15 +4,6 @@ document.body.style.background = "red";
 
 setTimeout (() => document.body.style.background = "white", 1000);
 
-console.log(navigator.platform);
-
-console.log(document.body.firstElementChild);
-
-console.log(document.body.children[1]);
-
-console.log(document.body.children[1].lastElementChild);
-
-
 // Напишите код, который выделит красным цветом все ячейки в таблице по диагонали.
 
 let table = document.body.firstElementChild;
@@ -46,7 +37,6 @@ function clear(elem) {
 
 let menu = document.querySelector('[data-widget-name]');
 
-console.log(menu.dataset.widgetName);
 
 let a = document.querySelectorAll('a');
 
@@ -189,3 +179,47 @@ while (one < two.textContent - 1) {
   li.textContent = ++one;
   two.before(li);
 }
+
+let tableSort = document.querySelector('#sort tbody'),
+tableTr = tableSort.querySelectorAll('tr');
+
+let arr = [...tableTr].slice(1);
+
+arr.sort((a, b) => a.firstElementChild.textContent > b.firstElementChild.textContent ? 1: -1);
+
+tableSort.append(...arr);
+
+console.log(window.innerWidth - document.documentElement.clientWidth);
+
+let scrollHeight = Math.max(
+  document.body.scrollHeight, document.documentElement.scrollHeight,
+  document.body.offsetHeight, document.documentElement.offsetHeight,
+  document.body.clientHeight, document.documentElement.clientHeight
+);
+
+console.log('Полная высота документа с прокручиваемой частью: ' + scrollHeight);
+
+// let scrollTop;
+// let i = 0;
+
+// let timer  = setTimeout(function t () {
+//   scrollTop = window.pageYOffset;
+//   console.log('Текущая прокрутка сверху: ' + scrollTop);
+//   if (i < 10) {
+//     i++;
+//     setTimeout (t, 1000);
+//   }
+// }, 1000);
+// console.log('Текущая прокрутка слева: ' + scrollTop);
+
+let position = two.getBoundingClientRect();
+let n = 0;
+
+let time  = setTimeout(function t () {
+  position = two.getBoundingClientRect();
+  console.log('Текущие координаты элемента: ' + position.left + '/' + position.bottom);
+  if (n < 10) {
+    n++;
+    setTimeout (t, 1000);
+  }
+}, 1000);
