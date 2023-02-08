@@ -1,26 +1,26 @@
 let tooltip = document.createElement('div');
-tooltip.classList.add('tooltip');
-
-document.addEventListener('mouseover', (event) => {
-  if (event.target.dataset.tooltip) {
-    let coord = event.target.getBoundingClientRect();
-    tooltip.innerHTML = event.target.dataset.tooltip;
-    tooltip.hidden = '';
-    tooltip.style.top = coord.top - tooltip.offsetHeight - 5 + 'px';
-    tooltip.style.left = (coord.left + coord.width / 2) - tooltip.offsetWidth / 2 + 'px';
-    
-    if (parseInt(tooltip.style.left) < 0) {
-      tooltip.style.left = 0 + 'px';
-    }
-    if (parseInt(tooltip.style.top) < 0) {
-      tooltip.style.top = coord.bottom + 5 + 'px';
-    }
-    document.body.append(tooltip);
-  }
+tooltip.className = 'tooltip';
+let currentElement = null;
+document.getElementById('house').addEventListener('mouseover', (event) => {
+  if (currentElement) return;
+  if (!event.target.dataset.tooltip) return;
+  let coord = event.target.getBoundingClientRec();
+  tooltip.innerHtml = event.target.dataset.tooltip;
+  tooltip.top = coord.top + coord.height + 'px';
+  tooltip.left = coord.left - coord.width / 2  + 'px';
+  document.body.append(tooltip);
 });
+  
+document.getElementById('house').addEventListener('mouseout', (event) => {
+  let relatedTarget = event.relatedTarget;
+  if (!currentElement) return;
 
-document.addEventListener('mouseout', (event) => {
-  if (event.target.dataset.tooltip) {
-    tooltip.hidden = true;
+  while (relatedTarget) {
+    if (relatedTarget == currentElement) return;
+
+    relatedTarget = relatedTarget.parentNode;
   }
+
+  currentElement.style.background = '';
+  currentElement = null;
 });
