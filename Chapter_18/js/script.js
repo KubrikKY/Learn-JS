@@ -1,36 +1,50 @@
-let slider = document.querySelector("#slider");
-let cordSlider = slider.getBoundingClientRect();
+// let slider = document.querySelector("#slider");
+// let cordSlider = slider.getBoundingClientRect();
 
 
-slider.addEventListener('mousedown', (event) => {
-  let thumb = event.target;
+// slider.addEventListener('mousedown', (event) => {
+//   let thumb = event.target;
 
-  if (!thumb.classList.contains('thumb')) return;
+//   if (!thumb.classList.contains('thumb')) return;
 
-  document.addEventListener('mousemove', (event) => {
-    move(event);
-  }); 
+//   document.addEventListener('mousemove', (event) => {
+//     move(event);
+//   }); 
 
-  function move (event) {
-    let cordThumb = thumb.getBoundingClientRect();
-    thumb.style.left = event.clientX - cordSlider.left + 'px';
-    if (cordSlider.right < cordThumb.right) {
-      thumb.style.left = cordSlider.width - cordThumb.width + 'px';
-    }
-    if (cordSlider.left > cordThumb.left) {
-      thumb.style.left = 0 + 'px';
-    }
-  }
+//   document.addEventListener('mouseup', onMouseUp);
 
-  document.addEventListener('mouseup', (event) => {
-    document.removeEventListener('mousemove', (event) => {
-      move(event);
-    });
 
-    console.log(event);
-    document.onmouseup = null;
-  });
+//   function move (event) {
+//     let newLeft = event.clientX - slider.getBoundingClientRect().left;
+
+//         if (newLeft < 0) {
+//           newLeft = 0;
+//         }
+//         let rightEdge = slider.offsetWidth - thumb.offsetWidth;
+//         if (newLeft > rightEdge) {
+//           newLeft = rightEdge;
+//         }
+
+//         thumb.style.left = newLeft + 'px';
+//   }
+//   function onMouseUp() {
+//     document.removeEventListener('mousemove', (event) => {
+//       move(event);
+//     }); 
+//     document.removeEventListener('mouseup', onMouseUp);
+
+//   }
+
   
-});
+// });
 
+
+let promise = new Promise ((resolve, reject) => {
+  let num = Math.floor(Math.random() * 10);
+  if (num > 5) {
+    resolve (num);
+  }
+  reject('Ошибка!')
+}).then(result => console.log(result))
+.catch((message) => console.log(message));
 
