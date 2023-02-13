@@ -14,3 +14,9 @@ function sortBy (elem) {
     return (a, b) => a.cells[elem.cellIndex].textContent > b.cells[elem.cellIndex].textContent ? 1: -1;
   }
 }
+
+let select = document.getElementById('genres');
+
+let option = new Option('Классика', 'classic');
+select.append(option);
+select.value = 'classic';
